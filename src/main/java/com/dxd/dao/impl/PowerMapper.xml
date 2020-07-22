@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.dxd.dao.PowerMapper">
+ 	<!-- 获得用户指定一级权限下的二级权限 -->
+ 	<select id="getPowerbytwo" parameterType="map" resultMap="powerMap2">
+ 		SELECT ep.* FROM easybuy_power AS ep
+		LEFT JOIN easybuy_user_power AS eup ON ep.pId = eup.pId
+		WHERE eup.uId = #{uId} AND ep.parentId = #{parentId} AND ep.typeId = 1
+ 	</select>
+ 	<!-- 获得用户指定二级权限下的三级权限 -->
+ 	<select id="getPowerbythree" parameterType="map" resultMap="powerMap3">
+ 		SELECT ep.* FROM easybuy_power AS ep
+		LEFT JOIN easybuy_user_power AS eup ON ep.pId = eup.pId
+		WHERE eup.uId = #{uId} AND ep.parentId = #{parentId} AND ep.typeId = 2
+ 	</select>
+ 	<!-- 获得一级菜单 -->
+ 	<select id="getPowerone" resultMap="powerMap">
+ 		SELECT * FROM easybuy_power WHERE typeId=0
+ 	</select>
+ 	<!-- 获得二级菜单 -->
+ 	<select id="getPowertwo" resultMap="powerMap2">
+ 		SELECT * FROM easybuy_power WHERE typeId=1
+ 	</select>
+ 	<!-- 获得三级菜单 -->
+ 	<select id="getPowerthree" resultMap="powerMap3">
+ 		SELECT * FROM easybuy_power WHERE typeId=2
+ 	</select>
+ 	<!-- 获得指定用户所有二级权限 -->
+ 	<select id="getUserAllPower2" parameterType="int" resultMap="powerMap2">
+ 		SELECT ep.* FROM easybuy_power AS ep
+		LEFT JOIN easybuy_user_power AS eup ON ep.pId = eup.pId
+		WHERE eup.uId = #{id} AND ep.typeId = 1
+ 	</select>
+ 	<!-- 获得指定用户所有三级权限 -->
+ 	<select id="getUserAllPower3" parameterType="int" resultMap="powerMap3">
+ 		SELECT ep.* FROM easybuy_power AS ep
+		LEFT JOIN easybuy_user_power AS eup ON ep.pId = eup.pId
+		WHERE eup.uId = #{id} AND ep.typeId = 2
+ 	</select>
+ 	<!-- 删除指定用户所有权限 -->
+ 	<delete id="delUserAllPower" parameterType="int">
+ 		DELETE FROM `easybuy_user_power` WHERE uId = #{uId}
+ 	</delete>
+ 	<!-- 添加指定用户权限 -->
+ 	<insert id="addUserPower" parameterType="map">
+ 		INSERT INTO `easybuy_user_power`(uId,pId)VALUE(#{uId},#{pId})
+ 	</insert>
+ 	<!-- 判断权限名是否存在 -->
+ 	<select id="checkPowerName" parameterType="String" resultType="int">
+ 		select count(*) from easybuy_power where pDesc = #{pName}
+ 	</select>
+ 	<!-- 添加新的权限 -->
+ 	<insert id="addPower" parameterType="map">
+ 		INSERT INTO `easybuy_power`(`pName`,`pDesc`,`parentId`,`typeId`)
+ 		VALUE(#{pName},#{pDesc},#{parentId},#{typeId})
+ 	</insert>
+ 	<!-- 得到该用户所有权限 -->
+ 	<select id="getUserAllPower" parameterType="int" resultMap="powerMap">
+ 		SELECT ep.* FROM easybuy_power AS ep
+		LEFT JOIN easybuy_user_power AS eup ON ep.pId = eup.pId
+		WHERE eup.uId = #{uId}
+ 	</select>
+ 	<resultMap type="Powerone" id="powerMap">
+ 		<id column="pId" property="pId"/>
+ 		<result column="pName" property="pName"/>
+ 		<result column="pDesc" property="pDesc"/>
+ 		<result column="parentId" property="parentId"/>
+ 		<result column="typeId" property="typeId"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="Powertwo" id="powerMap2">
+ 		<id column="pId" property="pId"/>
+ 		<result column="pName" property="pName"/>
+ 		<result column="pDesc" property="pDesc"/>
+ 		<result column="parentId" property="parentId"/>
+ 		<result column="typeId" property="typeId"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="Powerthree" id="powerMap3">
+ 		<id column="pId" property="pId"/>
+ 		<result column="pName" property="pName"/>
+ 		<result column="pDesc" property="pDesc"/>
+ 		<result column="parentId" property="parentId"/>
+ 		<result column="typeId" property="typeId"/>
+ 	</resultMap>
+ </mapper>
